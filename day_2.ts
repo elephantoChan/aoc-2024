@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 type Report = number[];
-const text = readFileSync("day_2.txt", "utf-8")
+const text = readFileSync("inputs/day_2.txt", "utf-8")
     .split("\r\n")
     .map((line) => line.split(" ").map((num) => parseInt(num)))
     .slice(0, -1) as Report[];
@@ -45,9 +45,3 @@ for (const report of text) {
 }
 
 console.log(safeReports);
-
-// function printText() {
-//     text.forEach((report) => {
-//         report.forEach((num) => process.stdout.write(`${num} `));
-//         console.log();
-// }
