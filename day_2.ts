@@ -1,47 +1,48 @@
 import { readFileSync } from "node:fs";
 type Report = number[];
-const text = readFileSync("inputs/day_2.txt", "utf-8")
+const input = readFileSync("inputs/day_2.txt", "utf-8")
     .split("\r\n")
     .map((line) => line.split(" ").map((num) => parseInt(num)))
     .slice(0, -1) as Report[];
 
-let safeReports = 0;
-let isSafe = true;
-
-for (const report of text) {
-    const pattern = report[0] - report[1] < 0 ? "ascending" : "descending";
-    isSafe = true;
-    for (const num in report) {
-        const current = report[num] - report[parseInt(num) + 1];
-        if (report[parseInt(num) + 1] === undefined) {
-            continue;
-        }
-        switch (pattern) {
-            case "ascending":
-                if (current == -1 || current == -2 || current == -3) {
-                } else if (
-                    report[num] - report[parseInt(num) + 2] == -1 ||
-                    report[num] - report[parseInt(num) + 2] == -2 ||
-                    report[num] - report[parseInt(num) + 2] == -3
-                ) {
-                } else {
-                    isSafe = false;
-                }
-                break;
-            case "descending":
-                if (current == 1 || current == 2 || current == 3) {
-                } else if (
-                    report[num] - report[parseInt(num) + 2] == 1 ||
-                    report[num] - report[parseInt(num) + 2] == 2 ||
-                    report[num] - report[parseInt(num) + 2] == 3
-                ) {
-                } else {
-                    isSafe = false;
-                }
-                break;
-        }
-    }
-    safeReports += isSafe ? 1 : 0;
+function isSafe(report: Report): boolean {
+    const isIncreasing = report.every(
+        (_, i) =>
+            i === 0 ||
+            (report[i] > report[i - 1] &&
+                report[i] - report[i - 1] >= 1 &&
+                report[i] - report[i - 1] <= 3)
+    );
+    const isDecreasing = report.every(
+        (_, i) =>
+            i === 0 ||
+            (report[i] < report[i - 1] &&
+                report[i - 1] - report[i] >= 1 &&
+                report[i - 1] - report[i] <= 3)
+    );
+    return isIncreasing || isDecreasing;
 }
 
-console.log(safeReports);
+function checkSafe(reports: Report[]): number {
+    let safeCount = 0;
+
+    for (const report of reports) {
+        if (isSafe(report)) {
+            safeCount++;
+            continue;
+        }
+
+        for (let i = 0; i < report.length; i++) {
+            const modifiedReport = report
+                .slice(0, i)
+                .concat(report.slice(i + 1));
+            if (isSafe(modifiedReport)) {
+                safeCount++;
+                break;
+            }
+        }
+    }
+
+    return safeCount;
+}
+console.log(checkSafe(input));
