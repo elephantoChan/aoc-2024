@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-const splitText: string[][] = readFileSync("day_1.txt", "utf-8")
+const splitText: string[][] = readFileSync("inputs/day_1.txt", "utf-8")
     .split("\r\n")
     .map((line) => line.split("   "));
 
